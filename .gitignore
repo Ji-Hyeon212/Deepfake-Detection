@@ -1,2 +1,4 @@
 data/
 outputs/logs/
+.idea/
+test_output/
