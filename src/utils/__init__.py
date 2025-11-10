@@ -8,15 +8,14 @@ from .logger import (
 )
 
 from .visualization import (
-    visualize_detection_result,
-    visualize_alignment_comparison,
-    visualize_preprocessing_pipeline,
-    visualize_quality_assessment,
-    plot_quality_distribution,
+    visualize_preprocessing_result,
+    visualize_batch,
+    visualize_feature_maps,
+    visualize_attention_maps,
     plot_training_curves,
-    visualize_batch_samples,
-    create_confusion_matrix,
+    plot_confusion_matrix,
     plot_roc_curve,
+    create_comparison_grid,
     save_visualization
 )
 
@@ -30,7 +29,13 @@ from .io_utils import (
     save_pickle,
     load_pickle,
     ensure_dir,
-    get_project_root
+    get_project_root,
+    load_config,
+    save_config,
+    count_parameters,
+    get_device,
+    print_model_info,
+    save_metrics
 )
 
 __all__ = [
@@ -38,15 +43,14 @@ __all__ = [
     'setup_logger',
 
     # Visualization
-    'visualize_detection_result',
-    'visualize_alignment_comparison',
-    'visualize_preprocessing_pipeline',
-    'visualize_quality_assessment',
-    'plot_quality_distribution',
+    'visualize_preprocessing_result',
+    'visualize_batch',
+    'visualize_feature_maps',
+    'visualize_attention_maps',
     'plot_training_curves',
-    'visualize_batch_samples',
-    'create_confusion_matrix',
+    'plot_confusion_matrix',
     'plot_roc_curve',
+    'create_comparison_grid',
     'save_visualization',
 
     # I/O
@@ -60,6 +64,12 @@ __all__ = [
     'load_pickle',
     'ensure_dir',
     'get_project_root',
+    'load_config',
+    'save_config',
+    'count_parameters',
+    'get_device',
+    'print_model_info',
+    'save_metrics'
 ]
 
 __version__ = '1.0.0'
