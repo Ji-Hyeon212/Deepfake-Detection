@@ -24,10 +24,10 @@ class Evaluator:
     """
 
     def __init__(
-            self,
-            model: nn.Module,
-            device: torch.device,
-            use_landmarks: bool = True
+        self,
+        model: nn.Module,
+        device: torch.device,
+        use_landmarks: bool = True
     ):
         """
         Args:
@@ -41,10 +41,10 @@ class Evaluator:
 
     @torch.no_grad()
     def evaluate(
-            self,
-            dataloader: DataLoader,
-            criterion: Optional[nn.Module] = None,
-            return_predictions: bool = False
+        self,
+        dataloader: DataLoader,
+        criterion: Optional[nn.Module] = None,
+        return_predictions: bool = False
     ) -> Dict:
         """
         모델 평가
@@ -94,7 +94,14 @@ class Evaluator:
             # 손실 계산
             if criterion is not None:
                 loss = criterion(logits, labels)
-                total_loss += loss.item() * images.size(0)
+
+                # CombinedLoss는 딕셔너리 반환
+                if isinstance(loss, dict):
+                    loss_value = loss['total'].item()
+                else:
+                    loss_value = loss.item()
+
+                total_loss += loss_value * images.size(0)
 
             # 예측 및 확률
             probs = torch.softmax(logits, dim=1)
@@ -127,11 +134,11 @@ class Evaluator:
         return metrics
 
     def _compute_metrics(
-            self,
-            preds: np.ndarray,
-            probs: np.ndarray,
-            labels: np.ndarray,
-            loss: Optional[float] = None
+        self,
+        preds: np.ndarray,
+        probs: np.ndarray,
+        labels: np.ndarray,
+        loss: Optional[float] = None
     ) -> Dict:
         """
         메트릭 계산
@@ -250,11 +257,11 @@ class MetricsTracker:
         }
 
     def update(
-            self,
-            epoch: int,
-            train_metrics: Dict,
-            val_metrics: Dict,
-            lr: float
+        self,
+        epoch: int,
+        train_metrics: Dict,
+        val_metrics: Dict,
+        lr: float
     ):
         """
         에폭 메트릭 업데이트
@@ -299,14 +306,14 @@ class MetricsTracker:
 
     def print_summary(self):
         """요약 출력"""
-        print("\n" + "=" * 60)
+        print("\n" + "="*60)
         print("Training Summary")
-        print("=" * 60)
+        print("="*60)
         print(f"Best Validation Accuracy: {self.best_metrics['best_val_acc']:.2f}% "
               f"(Epoch {self.best_metrics['best_epoch']})")
         print(f"Best Validation AUC: {self.best_metrics['best_val_auc']:.4f}")
         print(f"Best Validation F1: {self.best_metrics['best_val_f1']:.2f}%")
-        print("=" * 60)
+        print("="*60)
 
 
 # 테스트 코드
@@ -326,12 +333,10 @@ if __name__ == "__main__":
     probs = probs / probs.sum(axis=1, keepdims=True)
     labels = np.random.randint(0, n_classes, n_samples)
 
-
     # Evaluator 인스턴스 (더미 모델)
     class DummyModel(nn.Module):
         def forward(self, x, lm=None):
             return torch.randn(x.size(0), 2), None
-
 
     dummy_model = DummyModel()
     evaluator = Evaluator(dummy_model, torch.device('cpu'))

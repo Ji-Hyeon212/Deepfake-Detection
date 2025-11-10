@@ -17,10 +17,10 @@ class FocalLoss(nn.Module):
     """
 
     def __init__(
-            self,
-            alpha: Optional[torch.Tensor] = None,
-            gamma: float = 2.0,
-            reduction: str = 'mean'
+        self,
+        alpha: Optional[torch.Tensor] = None,
+        gamma: float = 2.0,
+        reduction: str = 'mean'
     ):
         """
         Args:
@@ -34,9 +34,9 @@ class FocalLoss(nn.Module):
         self.reduction = reduction
 
     def forward(
-            self,
-            inputs: torch.Tensor,
-            targets: torch.Tensor
+        self,
+        inputs: torch.Tensor,
+        targets: torch.Tensor
     ) -> torch.Tensor:
         """
         Args:
@@ -70,9 +70,9 @@ class ContrastiveLoss(nn.Module):
     """
 
     def __init__(
-            self,
-            margin: float = 1.0,
-            distance: str = 'euclidean'
+        self,
+        margin: float = 1.0,
+        distance: str = 'euclidean'
     ):
         """
         Args:
@@ -84,10 +84,10 @@ class ContrastiveLoss(nn.Module):
         self.distance = distance
 
     def forward(
-            self,
-            embeddings1: torch.Tensor,
-            embeddings2: torch.Tensor,
-            labels: torch.Tensor
+        self,
+        embeddings1: torch.Tensor,
+        embeddings2: torch.Tensor,
+        labels: torch.Tensor
     ) -> torch.Tensor:
         """
         Args:
@@ -121,9 +121,9 @@ class TripletLoss(nn.Module):
     """
 
     def __init__(
-            self,
-            margin: float = 1.0,
-            distance: str = 'euclidean'
+        self,
+        margin: float = 1.0,
+        distance: str = 'euclidean'
     ):
         """
         Args:
@@ -135,10 +135,10 @@ class TripletLoss(nn.Module):
         self.distance = distance
 
     def forward(
-            self,
-            anchor: torch.Tensor,
-            positive: torch.Tensor,
-            negative: torch.Tensor
+        self,
+        anchor: torch.Tensor,
+        positive: torch.Tensor,
+        negative: torch.Tensor
     ) -> torch.Tensor:
         """
         Args:
@@ -167,9 +167,9 @@ class CombinedLoss(nn.Module):
     """
 
     def __init__(
-            self,
-            weights: dict,
-            class_weights: Optional[torch.Tensor] = None
+        self,
+        weights: dict,
+        class_weights: Optional[torch.Tensor] = None
     ):
         """
         Args:
@@ -190,16 +190,16 @@ class CombinedLoss(nn.Module):
         self.contrastive_loss = ContrastiveLoss(margin=1.0)
 
     def forward(
-            self,
-            logits: torch.Tensor,
-            targets: torch.Tensor,
-            features: Optional[torch.Tensor] = None
+        self,
+        logits: torch.Tensor,
+        targets: torch.Tensor,
+        features: Optional[torch.Tensor] = None
     ) -> dict:
         """
         Args:
             logits: (B, C) 분류 로짓
             targets: (B,) 타겟 레이블
-            features: (B, D) 특징 벡터 (contrastive용)
+            features: (B, D) 특징 벡터 (contrastive용, 선택)
 
         Returns:
             losses: {
@@ -237,9 +237,10 @@ class CombinedLoss(nn.Module):
 
                 pair_labels = (label1 == label2).float()
 
-                contrastive = self.contrastive_loss(feat1, feat2, pair_labels)
-                losses['contrastive'] = contrastive
-                total_loss += self.weights['contrastive'] * contrastive
+                if len(feat1) > 0:
+                    contrastive = self.contrastive_loss(feat1, feat2, pair_labels)
+                    losses['contrastive'] = contrastive
+                    total_loss += self.weights['contrastive'] * contrastive
 
         losses['total'] = total_loss
 
@@ -254,9 +255,9 @@ class LabelSmoothingLoss(nn.Module):
     """
 
     def __init__(
-            self,
-            num_classes: int,
-            smoothing: float = 0.1
+        self,
+        num_classes: int,
+        smoothing: float = 0.1
     ):
         """
         Args:
@@ -269,9 +270,9 @@ class LabelSmoothingLoss(nn.Module):
         self.confidence = 1.0 - smoothing
 
     def forward(
-            self,
-            inputs: torch.Tensor,
-            targets: torch.Tensor
+        self,
+        inputs: torch.Tensor,
+        targets: torch.Tensor
     ) -> torch.Tensor:
         """
         Args:
