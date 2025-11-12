@@ -233,7 +233,7 @@ class Trainer:
 
         return metrics
 
-    def train(self):
+    def train(self, start_epoch: int = 1):
         """
         전체 학습 루프
         """
@@ -243,7 +243,7 @@ class Trainer:
 
         start_time = time.time()
 
-        for epoch in range(1, self.config['num_epochs'] + 1):
+        for epoch in range(start_epoch, self.config['num_epochs'] + 1):
             epoch_start = time.time()
 
             # 학습

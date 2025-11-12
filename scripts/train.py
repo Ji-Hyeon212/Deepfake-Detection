@@ -145,6 +145,7 @@ def create_criterion(config: dict, class_weights=None) -> nn.Module:
 
 def main(args):
     """메인 함수"""
+    global start_epoch
     print("\n" + "=" * 70)
     print("Deepfake Detection 모델 학습")
     print("=" * 70)
@@ -231,10 +232,11 @@ def main(args):
     # 체크포인트에서 재개
     if args.resume:
         start_epoch = trainer.resume_from_checkpoint(args.resume)
+        start_epoch += 1
         print(f"✅ 에폭 {start_epoch}부터 재개")
 
     # 학습 시작
-    trainer.train()
+    trainer.train(start_epoch=start_epoch)
 
     # 테스트 평가
     if test_loader is not None:
